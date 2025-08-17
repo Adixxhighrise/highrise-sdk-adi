@@ -1,0 +1,57 @@
+{
+  "name": "highrise-sdk-adi",
+  "version": "1.0.0",
+  "description": "A JavaScript library for writing and running Highrise bots - Fixed version with bug fixes and improvements",
+  "main": "./src/index.js",
+  "types": "./index.d.ts",
+  "directories": {
+    "lib": "src",
+    "test": "test"
+  },
+  "files": [
+    "src/**/*",
+    "index.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node ./src/index.js",
+    "test": "node -e \"console.log('Testing package...'); const pkg = require('./'); console.log('Success:', Object.keys(pkg));\"",
+    "build": "npm run build:sdk",
+    "build:sdk": "webpack --mode=production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Adixxhighrise/highrise-sdk-adi.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Adixxhighrise/highrise-sdk-adi/issues"
+  },
+  "homepage": "https://github.com/Adixxhighrise/highrise-sdk-adi#readme",
+  "keywords": [
+    "highrise",
+    "highrise-sdk",
+    "highrise-js",
+    "bot",
+    "chatbot",
+    "sdk",
+    "gaming",
+    "api",
+    "websocket",
+    "fixed-version"
+  ],
+  "author": "Aditya Pratap Singh",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "colors": "^1.4.0",
+    "events": "^3.3.0",
+    "ws": "^8.14.2"
+  }
+}
