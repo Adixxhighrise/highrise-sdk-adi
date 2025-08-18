@@ -1,4 +1,4 @@
-# **highrise.sdk.dev**
+# **highrise-sdk-adi**
 <p align="center">
   <img src="https://i.ibb.co/d0vtV49/highrise-logo.png" alt="highrise-logo" />
 </p>
@@ -10,7 +10,7 @@ This package is still in beta and is not yet ready for production use. Please us
 
 ## **⚙️ Installation** 
 ```
-npm i highrise.sdk.dev@latest
+npm i highrise-sdk-adi@latest
 ```
 
 ## **✨ Features**
@@ -24,7 +24,7 @@ npm i highrise.sdk.dev@latest
 ## **📥 Class Import**
 1. Import the necessary classes and modules from the SDK:
 ```js
-const { Highrise, Events, WebApi } = require('highrise.sdk.dev');
+const { Highrise, Events, WebApi } = require('highrise-sdk-adi');
 ```
 
 2. Set up the bot's settings by providing a bot token and room ID:
@@ -112,4 +112,5 @@ Contributions to the Highrise SDK are welcome! If you find any issues or want to
 ## Note
 
 This package is not an official Highrise package, it's self-made by iHsein (sphinix) and is still in beta.
+
 
