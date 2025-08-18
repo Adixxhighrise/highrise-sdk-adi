@@ -111,6 +111,7 @@ Contributions to the Highrise SDK are welcome! If you find any issues or want to
 
 ## Note
 
-This package is not an official Highrise package, it's self-made by iHsein (sphinix) and is still in beta.
+This package is not an official Highrise package, it's self-made by Aditya (Adixxhighrise) and is still in beta.
+
 
 
