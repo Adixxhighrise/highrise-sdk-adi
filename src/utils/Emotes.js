@@ -275,6 +275,13 @@ const Emotes = {
     Howl2: { id: "idle-howl", duration: 10 },
     Laidback: { id: "sit-open", duration: 26 }, 
     hipshake: { id: "dance-hipshake", duration: 12 },
+    celebrate: { id: "emote-swing-celebrate", duration: 1.6 },
+    celebrateidle: { id: "emote-swing-celebrate-idle", duration: 1.6 },
+    swingnet3: { id: "emote-swing-net-3", duration: 2 },
+    swingsneak: { id: "emote-swing-sneak-Idle", duration: 2.5 },
+    swingnet2: { id: "emote-swing-net-2", duration: 2.5 },
+    swingnet1: { id: "emote-swing-net", duration: 2.6 },
+    riflethrow: { id: "emote-rifle-throw", duration: 6.6 },
   };
   module.exports = Emotes;
  

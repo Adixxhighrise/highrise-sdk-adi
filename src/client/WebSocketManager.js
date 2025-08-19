@@ -68,7 +68,7 @@ class WebSocketManager extends EventEmitter {
     } catch (error) {
       this.connected = false;
       this._reconnecting = false;
-      console.error("[i]".red + " Error when creating WebSocket: " + error + ". Please report this to @bhacker. in the Discord.");
+      console.error("[i]".red + " Error when creating WebSocket: " + error + ". Please report this to @iHsein in the Highrise Discord server.");
     }
   }
 
@@ -270,7 +270,7 @@ class WebSocketManager extends EventEmitter {
    * @private
    */
   _onError(event) {
-    console.error("[i]".red + ` WebSocket error: ${event.message}. Please report this to @bhacker. in the Discord.`);
+    console.error("[i]".red + ` WebSocket error: ${event.message}. Please report this to @iHsein in the Highrise Discord server.`);
     this.connected = false;
     this._reconnecting = false;
     this.reconnect();
