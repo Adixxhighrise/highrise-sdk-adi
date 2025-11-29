@@ -282,6 +282,10 @@ const Emotes = {
     swingnet2: { id: "emote-swing-net-2", duration: 2.5 },
     swingnet1: { id: "emote-swing-net", duration: 2.6 },
     riflethrow: { id: "emote-rifle-throw", duration: 6.6 },
+    coolguy: { id: "emote-coolguy", duration: 3.99 },
+    disappointed: { id: "emote-receive-disappointed", duration: 6.5 },
+    laid2: { id: "sit-idle-sleep", duration: 17.28 },
+    idletough1: { id: "idle_tough", duration: 15.8 }
   };
   module.exports = Emotes;
  
