@@ -197,9 +197,12 @@ class BulkMessage {
     for (let i = 0; i < chunks.length; i++) {
       try {
         await _sendPayload(this.bot, {
-          _type: 'SendBulkMessageRequest', user_ids: chunks[i],
-          content: message, type: 'text',
-        });
+  _type: 'SendBulkMessageRequest',
+  user_ids: chunks[i],
+  type: 'invite',
+  room_id:  destination.room_id  || null,
+  world_id: destination.world_id || null,
+});
         sent += chunks[i].length;
       } catch (err) {
         failed += chunks[i].length;
@@ -259,11 +262,12 @@ class BulkInvite {
     for (let i = 0; i < chunks.length; i++) {
       try {
         await _sendPayload(this.bot, {
-          _type: 'SendBulkMessageRequest', user_ids: chunks[i],
-          content: '', type: 'invite',
-          room_id:  destination.room_id  || null,
-          world_id: destination.world_id || null,
-        });
+  _type: 'SendBulkMessageRequest',
+  user_ids: batch,
+  type: 'invite',
+  room_id:  destination.room_id  || null,
+  world_id: destination.world_id || null,
+});
         sent += chunks[i].length;
       } catch (err) {
         failed += chunks[i].length;
