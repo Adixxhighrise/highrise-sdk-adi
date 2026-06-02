@@ -101,17 +101,9 @@ bot.on('playerJoin', (user, position) => {
   console.log("[i]".green + ` ${user.username} joined the room.`.green);
 })
 ```
-
-## **📘 Documentation**
-Refer to the SDK documentation for more information on available events and methods.
-[Highrise JS SDK Documentation](https://bit.ly/highrise-sdk)
-
-## **🤝 Contributions**
-Contributions to the Highrise SDK are welcome! If you find any issues or want to add new features, feel free to submit a pull request.
-
 ## Note
 
-This package is not an official Highrise package, it's self-made by Aditya (Adixxhighrise) and is still in beta.
+This package is not an official Highrise package, it's modified by Aditya (Adixxhighrise) and is still in beta.
 
 
 
