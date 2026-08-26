@@ -46,6 +46,7 @@ module.exports = class DanceFloor {
   async create() {
     try {
       const players = Array.from(this.playersOnDanceFloor); // Use the tracked players
+      if (players.length === 0) return;
       const groups = this.splitIntoGroups(players, this.options.groupSize);
 
       for (const group of groups) {
