@@ -66,7 +66,7 @@ module.exports = class DanceFloor {
   async performEmotes(group, emoteId, emoteDuration) {
     const emotePromises = group.map(async playerId => {
       try {
-        await this.bot.player.emote(playerId, emoteId);
+        await this.bot.player.emote(emoteId,playerId);
       } catch (e) {
         console.error("Error emote player", e.message);
       }
