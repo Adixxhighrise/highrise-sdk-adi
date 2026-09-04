@@ -1,6 +1,6 @@
 {
   "name": "highrise-sdk-adi",
-  "version": "1.0.6",
+  "version": "1.1.1",
   "description": "A JavaScript library for writing and running Highrise bots - Fixed version with bug fixes and improvements",
   "main": "./src/index.js",
   "types": "./index.d.ts",
