@@ -5,6 +5,34 @@ const { generateRid } = require("../../utils/Util");
 const { ChatRequest, SendPayloadWithoutResponse } = require("../../utils/Models");
 
 // ─────────────────────────────────────────────
+// Shared splitter  →  used by PublicMessage/WhisperMessage (256) and DirectMessage (2000)
+// ─────────────────────────────────────────────
+function splitMessage(text, limit) {
+  const chunks = [];
+  let remaining = String(text).trim();
+
+  while (remaining.length > limit) {
+    // prefer breaking on the last newline within range
+    let breakPoint = remaining.lastIndexOf('\n', limit);
+
+    // otherwise prefer the last space within range
+    if (breakPoint <= 0) breakPoint = remaining.lastIndexOf(' ', limit);
+
+    // no good break point (one huge word) → hard cut
+    if (breakPoint <= 0) breakPoint = limit;
+
+    chunks.push(remaining.slice(0, breakPoint).trim());
+    remaining = remaining.slice(breakPoint).trim();
+  }
+
+  if (remaining.length) chunks.push(remaining);
+  return chunks;
+}
+
+const CHAT_CHUNK_LIMIT = 256;
+const DM_CHUNK_LIMIT = 2000;
+
+// ─────────────────────────────────────────────
 // Public room chat  →  bot.message.send(text)
 // ─────────────────────────────────────────────
 class PublicMessage {
@@ -19,10 +47,30 @@ class PublicMessage {
       if (!message) throw new HighriseTypeError(ErrorCodes.MissingParameters, 'message');
       if (typeof message !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'message', 'string');
 
+      const sender = new SendPayloadWithoutResponse(this.bot);
+
+      if (message.length > CHAT_CHUNK_LIMIT) {
+        const parts = splitMessage(message, CHAT_CHUNK_LIMIT);
+        let failed = 0;
+
+        for (const part of parts) {
+          try {
+            const chatRequest = new ChatRequest(part, null, generateRid());
+            const payload = { _type: "ChatRequest", ...chatRequest };
+            await sender.sendPayloadWithoutResponse(payload);
+          } catch {
+            failed++;
+          }
+        }
+
+        if (failed === parts.length) {
+          throw new HighrisejsError(ErrorCodes.SendFailed || 'SEND_FAILED', 'All message parts failed to send in bot.message.send()');
+        }
+        return;
+      }
+
       const chatRequest = new ChatRequest(message, null, this.rid);
       const payload = { _type: "ChatRequest", ...chatRequest };
-
-      const sender = new SendPayloadWithoutResponse(this.bot);
       await sender.sendPayloadWithoutResponse(payload);
     } catch (error) {
       throw error;
@@ -48,10 +96,30 @@ class WhisperMessage {
       if (typeof user_id !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'user_id', 'string');
       if (typeof message !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'message', 'string');
 
+      const sender = new SendPayloadWithoutResponse(this.bot);
+
+      if (message.length > CHAT_CHUNK_LIMIT) {
+        const parts = splitMessage(message, CHAT_CHUNK_LIMIT);
+        let failed = 0;
+
+        for (const part of parts) {
+          try {
+            const chatRequest = new ChatRequest(part, user_id, generateRid());
+            const payload = { _type: "ChatRequest", ...chatRequest };
+            await sender.sendPayloadWithoutResponse(payload);
+          } catch {
+            failed++;
+          }
+        }
+
+        if (failed === parts.length) {
+          throw new HighrisejsError(ErrorCodes.SendFailed || 'SEND_FAILED', 'All message parts failed to send in bot.whisper.send()');
+        }
+        return;
+      }
+
       const chatRequest = new ChatRequest(message, user_id, this.rid);
       const payload = { _type: "ChatRequest", ...chatRequest };
-
-      const sender = new SendPayloadWithoutResponse(this.bot);
       await sender.sendPayloadWithoutResponse(payload);
     } catch (error) {
       throw error;
@@ -64,9 +132,11 @@ class WhisperMessage {
 //
 //   bot.direct.send(conversationId, message)
 //     – single DM to one user (needs conversation ID)
+//     – messages over 2000 chars are auto-chunked and sent in order
 //
 //   bot.direct.sendBulk(userIds, message)
 //     – DM to up to 100 users at once (needs array of user IDs)
+//     – messages over 2000 chars are auto-chunked and sent in order
 // ─────────────────────────────────────────────────────────────────────
 class DirectMessage {
   constructor(bot) {
@@ -82,6 +152,34 @@ class DirectMessage {
       if (typeof conversation_id !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'conversation_id', 'string');
       if (typeof message !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'message', 'string');
 
+      const sender = new SendPayloadWithoutResponse(this.bot);
+
+      if (message.length > DM_CHUNK_LIMIT) {
+        const parts = splitMessage(message, DM_CHUNK_LIMIT);
+        let failed = 0;
+
+        for (const part of parts) {
+          try {
+            const payload = {
+              _type: 'SendMessageRequest',
+              conversation_id,
+              content: part,
+              type: 'text',
+              room_id: null,
+              rid: generateRid()
+            };
+            await sender.sendPayloadWithoutResponse(payload);
+          } catch {
+            failed++;
+          }
+        }
+
+        if (failed === parts.length) {
+          throw new HighrisejsError(ErrorCodes.SendFailed || 'SEND_FAILED', 'All message parts failed to send in bot.direct.send()');
+        }
+        return;
+      }
+
       const payload = {
         _type: 'SendMessageRequest',
         conversation_id,
@@ -91,7 +189,6 @@ class DirectMessage {
         rid: this.rid
       };
 
-      const sender = new SendPayloadWithoutResponse(this.bot);
       await sender.sendPayloadWithoutResponse(payload);
     } catch (error) {
       throw error;
@@ -108,6 +205,33 @@ class DirectMessage {
       if (!message) throw new HighriseTypeError(ErrorCodes.MissingParameters, 'message');
       if (typeof message !== 'string') throw new HighriseTypeError(ErrorCodes.InvalidParameterType, 'message', 'string');
 
+      const sender = new SendPayloadWithoutResponse(this.bot);
+
+      if (message.length > DM_CHUNK_LIMIT) {
+        const parts = splitMessage(message, DM_CHUNK_LIMIT);
+        let failed = 0;
+
+        for (const part of parts) {
+          try {
+            const payload = {
+              _type: 'SendBulkMessageRequest',
+              user_ids: userIds,
+              content: part,
+              type: 'text',
+              rid: generateRid()
+            };
+            await sender.sendPayloadWithoutResponse(payload);
+          } catch {
+            failed++;
+          }
+        }
+
+        if (failed === parts.length) {
+          throw new HighrisejsError(ErrorCodes.SendFailed || 'SEND_FAILED', 'All message parts failed to send in bot.direct.sendBulk()');
+        }
+        return;
+      }
+
       const payload = {
         _type: 'SendBulkMessageRequest',
         user_ids: userIds,
@@ -116,7 +240,6 @@ class DirectMessage {
         rid: this.rid
       };
 
-      const sender = new SendPayloadWithoutResponse(this.bot);
       await sender.sendPayloadWithoutResponse(payload);
     } catch (error) {
       throw error;
